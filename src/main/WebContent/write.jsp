@@ -88,7 +88,45 @@
 		</div>
 	</nav>
 	<!-- 네비게이션 영역 끝 -->
+<script>
+	function uploadFunction(} {
+		let data = new FormData(form);
+		
+		$.ajax({
+			type: "post",
+			enctype: "multipart/form-data",
+			url: "/conn/downloadAction",
+			data: data,
+			processData: false,
+			contentType: false,
+			cache: false,
+			timeout: 600000,
+			success: function(data) {
+				if (data == 1) {
+					$('#statusMessage').html('파일업로드 성공');
+					$('#statusMessage').css("color", "green");
+				} else {
+					$('#statusMessage').html('파일업로드 실패');
+					$('#statusMessage').css("color", "red");
+				}
+			},
+			error: function(e) {
+				$('#statusMessage').html('파일업로드 에러');
+				$('#statusMessage').css("color", "red");
+			}
+		});
+	}
+	String fileSave = "C:/JSP/upload";
+	String real = request.getServletContext().getRealPath(fileSave);
+	File isDir = new File(real);
 	
+	if (!isDir.isDirectory()) {
+		System.out.println("디렉토리가 없습니다. 디렉토리를 새로 생성합니다.");
+		isDir.mkdir();
+	}
+	
+	MultipartRequest multi = new MultipartRequest(request, real, 5*1024*1024, "UTF-8", new DefaultFileRenamePolicty());
+</script>
 	<!-- 게시판 글쓰기 양식 영역 시작 -->
 <div class="py-5">
 <div class="jumbotron">
@@ -100,7 +138,7 @@
 			<div class="row">
 				<div class="col-lg-15">
 				<div class="p-4 p-md-5">
-			<form method="post" action="writeAction.jsp" style="align:center">
+			<form method="post" action="writeAction.jsp" enctype="multi.getParamter('file')" id="form" style="align:center">
 				<table class="table table-striped" style="text-align: center; width:1050px; border: 1px solid #dddddd">
 					<thead>
 						<tr>
@@ -115,11 +153,10 @@
 							<td><textarea class="form-control" placeholder="글 내용" name="bbsContent" maxlength="2048" style="height: 350px;"></textarea></td>
 						</tr>
 						<tr>
-							<form action="updateAction.jsp" method="post" enctype="multipart/form-data">
-								파일 : <input type="file" name="file1"><br>
-								파일 : <input type="file" name="file2"><br>
-								파일 : <input type="file" name="file3"><br>
-							</form>
+							<td>
+								<input type="file" name="uploadfile" />
+								<button type="button" onclick="uploadFunction();" class="form-control btn-btn primary">파일 업로드</button>
+							</td>
 						<tr>
 					</tbody>
 				</table>

@@ -97,6 +97,45 @@
 		</div>
 	</nav>
 	<!-- 네비게이션 영역 끝 -->
+<script>
+	function uploadFunction(} {
+		let data = new FormData(form);
+		
+		$.ajax({
+			type: "post",
+			enctype: "multi.getParamter('file')",
+			url: "/conn/downloadAction",
+			data: data,
+			processData: false,
+			contentType: false,
+			cache: false,
+			timeout: 600000,
+			success: function(data) {
+				if (data == 1) {
+					$('#statusMessage').html('파일업로드 성공');
+					$('#statusMessage').css("color", "green");
+				} else {
+					$('#statusMessage').html('파일업로드 실패');
+					$('#statusMessage').css("color", "red");
+				}
+			},
+			error: function(e) {
+				$('#statusMessage').html('파일업로드 에러');
+				$('#statusMessage').css("color", "red");
+			}
+		});
+	}
+	String fileSave = "C:/JSP/upload";
+	String real = request.getServletContext().getRealPath(fileSave);
+	File isDir = new File(real);
+	
+	if (!isDir.isDirectory()) {
+		System.out.println("디렉토리가 없습니다. 디렉토리를 새로 생성합니다.");
+		isDir.mkdir();
+	}
+	
+	MultipartRequest multi = new MultipartRequest(request, real, 5*1024*1024, "UTF-8", new DefaultFileRenamePolicty());
+</script>
 <!-- 게시판 글쓰기 양식 영역 시작 -->
 <div class="py-5">
 <div class="jumbotron">
@@ -125,7 +164,10 @@
 								style="height: 350px;"><%=bbs.getBbsContent() %></textarea></td>
 						</tr>
 						<tr>
-							<td><input type="file" name="file1" placeholder="파일"><br></td>
+							<td method="post" style="align:center" enctype="multi.getParamter('file')">
+								<input type="file" name="uploadfile" />
+								<button type="submit" onclick="uploadFunction();" class="form-control btn-btn primary">파일 업로드</button>
+							<td>
 						<tr>
 					</tbody>
 				</table>
